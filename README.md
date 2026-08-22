@@ -1,5 +1,6 @@
 # Check-Security_Win11
 
+🇫🇷 [Version française](README.fr.md)
 
 A comprehensive, non-invasive security audit for Windows 11 — 22 sections covering everything from Windows Update status to TLS cipher suites, scored with a category-weighted model, tracked over time, and rendered as a searchable HTML dashboard. Read-only: every check inspects system state, none of them change it.
 
