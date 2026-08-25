@@ -1,4 +1,4 @@
-# Check-Security_Win11
+# Check-Security
 
 🇬🇧 [English version](README.md)
 
@@ -26,7 +26,7 @@ Un audit de securite complet et non invasif pour Windows 11 — 22 sections couv
 
 ## Presentation
 
-`Check-Security_Win11_v5_0_11.ps1` execute un audit en une passe de la posture de securite d'une machine Windows 11 : statut Windows Update, pare-feu, Defender, politique de comptes/mots de passe, BitLocker, exposition des protocoles reseau, taches planifiees, programmes au demarrage, VBS/Credential Guard/HVCI, configuration TLS/chiffrement, magasin de confiance des certificats, resilience anti-ransomware (Shadow Copy/VSS), et plus encore — 22 sections au total.
+`Check-Security.ps1` execute un audit en une passe de la posture de securite d'une machine Windows 11 : statut Windows Update, pare-feu, Defender, politique de comptes/mots de passe, BitLocker, exposition des protocoles reseau, taches planifiees, programmes au demarrage, VBS/Credential Guard/HVCI, configuration TLS/chiffrement, magasin de confiance des certificats, resilience anti-ransomware (Shadow Copy/VSS), et plus encore — 22 sections au total.
 
 Il est entierement **en lecture seule**. Aucune verification ne modifie un parametre, n'arrete un service, ni n'ecrit dans le registre en dehors de ses propres fichiers de rapport/historique — il ne fait que lire et rapporter.
 
@@ -137,14 +137,14 @@ Si vous comptez sur `-Category` pour accelerer des re-verifications ciblees, ver
 
 ## Premier lancement (pas a pas)
 
-1. Copier `Check-Security_Win11_v5_0_11.ps1` sur la machine cible.
+1. Copier `Check-Security.ps1` sur la machine cible.
 
 2. Ouvrir PowerShell **en tant qu'Administrateur** manuellement — le script exige l'elevation des le depart et ne s'auto-eleve pas.
 
 3. Lancer d'abord le self-test — aucun rapport ecrit, aucune requete registre/WMI, rien de modifie :
 
    ```powershell
-   .\Check-Security_Win11_v5_0_11.ps1 -SelfTest
+   .\Check-Security.ps1 -SelfTest
    ```
 
    Execute 39 assertions internes (fonction d'echappement HTML, rendu des badges de statut, table des poids par categorie, la fonction `ShouldRunSection` elle-meme, coherence du seuil de regression du score, et plus). Code de sortie `0` = tout passe, `1` = au moins un echec.
@@ -152,7 +152,7 @@ Si vous comptez sur `-Category` pour accelerer des re-verifications ciblees, ver
 4. Lancer l'audit complet :
 
    ```powershell
-   .\Check-Security_Win11_v5_0_11.ps1
+   .\Check-Security.ps1
    ```
 
    Prend environ quelques minutes selon la machine (les requetes de journaux d'evenements et l'enumeration des certificats sont generalement les etapes les plus lentes). Suivre en console le flux en direct `[OK]`/`[WARN]`/`[FAIL]`/`[INFO]` a mesure que chaque section se termine.
@@ -178,9 +178,9 @@ Si vous comptez sur `-Category` pour accelerer des re-verifications ciblees, ver
 **Exemples :**
 
 ```powershell
-.\Check-Security_Win11_v5_0_11.ps1 -SelfTest
-.\Check-Security_Win11_v5_0_11.ps1
-.\Check-Security_Win11_v5_0_11.ps1 -Silent
+.\Check-Security.ps1 -SelfTest
+.\Check-Security.ps1
+.\Check-Security.ps1 -Silent
 ```
 
 ---
@@ -190,15 +190,15 @@ Si vous comptez sur `-Category` pour accelerer des re-verifications ciblees, ver
 Chaque run reel (hors `-SelfTest`) ecrit dans :
 
 ```
-%USERPROFILE%\Desktop\Rapports_Maintenance\AuditSecurity\
+%USERPROFILE%\Desktop\Rapports_Maintenance\Check-Security\
 ```
 
 | Fichier | Contenu |
 |---|---|
-| `Audit_Securite_Win11_<horodatage>.html` | Tableau de bord complet : resume executif ("Points critiques"), score pondere, tableau de repartition par categorie, sparkline de tendance, banniere de regression le cas echeant, detail complet des 22 sections avec recherche/filtre et ancres |
-| `Audit_Securite_Win11_<horodatage>.txt` | Equivalent texte brut de l'ensemble des constats |
-| `Audit_Securite_Win11_<horodatage>.json` | Export complet machine-readable de chaque constat |
-| `Audit_Securite_Win11_<horodatage>.csv` | Export tabulaire de chaque constat |
+| `Check-Security_<horodatage>.html` | Tableau de bord complet : resume executif ("Points critiques"), score pondere, tableau de repartition par categorie, sparkline de tendance, banniere de regression le cas echeant, detail complet des 22 sections avec recherche/filtre et ancres |
+| `Check-Security_<horodatage>.txt` | Equivalent texte brut de l'ensemble des constats |
+| `Check-Security_<horodatage>.json` | Export complet machine-readable de chaque constat |
+| `Check-Security_<horodatage>.csv` | Export tabulaire de chaque constat |
 | `_dernier_audit_baseline.json` | Instantane du dernier run uniquement, ecrase a chaque run — utilise pour calculer les deltas par controle |
 | `_historique_scores.json` | Historique glissant des 20 derniers couples (date, score) — utilise pour la sparkline de tendance |
 
@@ -217,7 +217,7 @@ Chaque run reel (hors `-SelfTest`) ecrit dans :
    | Champ | Valeur |
    |---|---|
    | Programme/script | `pwsh.exe` (ou `powershell.exe`) |
-   | Arguments | `-NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\Security\Check-Security_Win11_v5_0_11.ps1" -Silent` |
+   | Arguments | `-NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\Security\Check-Security.ps1" -Silent` |
    | Executer avec les autorisations maximales | Oui |
 
 5. **Consulter d'abord le resume "Points critiques"** sur le rapport HTML de chaque machine plutot que de lire les 22 sections completes a chaque fois — c'est exactement a ca qu'il sert.
@@ -262,4 +262,4 @@ Lire directement le nom de l'assertion — il pointe vers une fonction utilitair
 
 ---
 
-<sub>Check-Security_Win11 — 22 sections, lecture seule, scoring pondere par categorie, confiance des certificats basee sur l'empreinte, self-test a 39 assertions.</sub>
+<sub>Check-Security — 22 sections, lecture seule, scoring pondere par categorie, confiance des certificats basee sur l'empreinte, self-test a 39 assertions.</sub>
