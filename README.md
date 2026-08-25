@@ -1,4 +1,4 @@
-# Check-Security_Win11
+# Check-Security
 
 🇫🇷 [Version française](README_FRENCH.md)
 
@@ -26,7 +26,7 @@ A comprehensive, non-invasive security audit for Windows 11 — 22 sections cove
 
 ## Overview
 
-`Check-Security_Win11_v5_0_11.ps1` runs a single-pass audit of a Windows 11 machine's security posture: Windows Update status, firewall, Defender, account/password policy, BitLocker, network protocol exposure, scheduled tasks, startup programs, VBS/Credential Guard/HVCI, TLS/cipher configuration, certificate trust store, ransomware resilience (Shadow Copy/VSS), and more — 22 sections in total.
+`Check-Security.ps1` runs a single-pass audit of a Windows 11 machine's security posture: Windows Update status, firewall, Defender, account/password policy, BitLocker, network protocol exposure, scheduled tasks, startup programs, VBS/Credential Guard/HVCI, TLS/cipher configuration, certificate trust store, ransomware resilience (Shadow Copy/VSS), and more — 22 sections in total.
 
 It is entirely **read-only**. No check modifies a setting, stops a service, or writes to the registry outside of its own report/history files — it only reads and reports.
 
@@ -137,14 +137,14 @@ If you rely on `-Category` to speed up targeted re-checks, verify this on your o
 
 ## First run (step by step)
 
-1. Copy `Check-Security_Win11_v5_0_11.ps1` to the target machine.
+1. Copy `Check-Security.ps1` to the target machine.
 
 2. Open PowerShell **as Administrator** manually — the script requires elevation up front and does not self-elevate.
 
 3. Run the self-test first — no reports written, no registry/WMI queries, nothing modified:
 
    ```powershell
-   .\Check-Security_Win11_v5_0_11.ps1 -SelfTest
+   .\Check-Security.ps1 -SelfTest
    ```
 
    Runs 39 internal assertions (HTML-escaping helper, status-badge rendering, category weights table, the `ShouldRunSection` helper itself, score-regression threshold sanity, and more). Exit code `0` = all passed, `1` = at least one failure.
@@ -152,7 +152,7 @@ If you rely on `-Category` to speed up targeted re-checks, verify this on your o
 4. Run the full audit:
 
    ```powershell
-   .\Check-Security_Win11_v5_0_11.ps1
+   .\Check-Security.ps1
    ```
 
    Takes roughly a few minutes depending on the machine (event log queries and certificate enumeration are usually the slowest steps). Watch the console for a live `[OK]`/`[WARN]`/`[FAIL]`/`[INFO]` stream as each section completes.
@@ -178,9 +178,9 @@ If you rely on `-Category` to speed up targeted re-checks, verify this on your o
 **Examples:**
 
 ```powershell
-.\Check-Security_Win11_v5_0_11.ps1 -SelfTest
-.\Check-Security_Win11_v5_0_11.ps1
-.\Check-Security_Win11_v5_0_11.ps1 -Silent
+.\Check-Security.ps1 -SelfTest
+.\Check-Security.ps1
+.\Check-Security.ps1 -Silent
 ```
 
 ---
@@ -190,15 +190,15 @@ If you rely on `-Category` to speed up targeted re-checks, verify this on your o
 Every real run (not `-SelfTest`) writes to:
 
 ```
-%USERPROFILE%\Desktop\Rapports_Maintenance\AuditSecurity\
+%USERPROFILE%\Desktop\Rapports_Maintenance\Check-Security\
 ```
 
 | File | Content |
 |---|---|
-| `Audit_Securite_Win11_<timestamp>.html` | Full dashboard: executive summary ("Critical points"), weighted score, per-category breakdown table, trend sparkline, regression banner if applicable, full searchable/filterable 22-section detail with anchors |
-| `Audit_Securite_Win11_<timestamp>.txt` | Plain-text equivalent of the full findings |
-| `Audit_Securite_Win11_<timestamp>.json` | Full machine-readable export of every finding |
-| `Audit_Securite_Win11_<timestamp>.csv` | Tabular export of every finding |
+| `Check-Security_<timestamp>.html` | Full dashboard: executive summary ("Critical points"), weighted score, per-category breakdown table, trend sparkline, regression banner if applicable, full searchable/filterable 22-section detail with anchors |
+| `Check-Security_<timestamp>.txt` | Plain-text equivalent of the full findings |
+| `Check-Security_<timestamp>.json` | Full machine-readable export of every finding |
+| `Check-Security_<timestamp>.csv` | Tabular export of every finding |
 | `_dernier_audit_baseline.json` | Snapshot of the last run only, overwritten every run — used to compute per-check deltas |
 | `_historique_scores.json` | Rolling history of the last 20 (date, score) pairs — used for the trend sparkline |
 
@@ -217,7 +217,7 @@ Every real run (not `-SelfTest`) writes to:
    | Field | Value |
    |---|---|
    | Program/script | `pwsh.exe` (or `powershell.exe`) |
-   | Arguments | `-NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\Security\Check-Security_Win11_v5_0_11.ps1" -Silent` |
+   | Arguments | `-NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\Security\Check-Security.ps1" -Silent` |
    | Run with highest privileges | Yes |
 
 5. **Review the "Points critiques" summary first** on each machine's HTML report rather than reading the full 22 sections every time — that's exactly what it's there for.
@@ -262,4 +262,4 @@ Read the assertion name directly — it points at a specific broken helper funct
 
 ---
 
-<sub>Check-Security_Win11 — 22 sections, read-only, category-weighted scoring, thumbprint-based certificate trust, 39-assertion self-test.</sub>
+<sub>Check-Security — 22 sections, read-only, category-weighted scoring, thumbprint-based certificate trust, 39-assertion self-test.</sub>
